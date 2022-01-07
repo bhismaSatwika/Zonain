@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zonain/common/style.dart';
-import 'package:zonain/services/user_location_services.dart';
-import 'package:zonain/widget/map_widget.dart';
+import 'package:zonain/widget/report_bottom_sheet.dart';
+import 'package:zonain/widget/user_map_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -12,18 +12,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  UserLocationService userLocationService = UserLocationService();
-  
-  @override
-  void dispose() {
-    userLocationService.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: background,
@@ -98,7 +91,6 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
-                    onPressed: () {},
                     child: const Text('Report Crime'),
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(Colors.grey),
@@ -113,6 +105,13 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
+                    onPressed: () {
+                      showModalBottomSheet(
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (ctx) => const ReportBottomSheet(),
+                      );
+                    },
                   ),
                   ElevatedButton(
                     onPressed: () {},
