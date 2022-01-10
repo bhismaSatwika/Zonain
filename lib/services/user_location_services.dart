@@ -11,7 +11,7 @@ class UserLocationService {
 
   UserLocationService() {
     userLocation.requestPermission().then((permissionStatus) {
-      if (permissionStatus == PermissionStatus.granted) {
+      if (permissionStatus == PermissionStatus.granted || permissionStatus == PermissionStatus.grantedLimited){
         userLocation.onLocationChanged.listen((locationData) {
           // ignore: unnecessary_null_comparison
           if (locationData != null) {
