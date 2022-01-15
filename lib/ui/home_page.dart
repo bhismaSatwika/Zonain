@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:zonain/common/style.dart';
+import 'package:zonain/provider/map_provider.dart';
 import 'package:zonain/widget/report_bottom_sheet.dart';
 import 'package:zonain/widget/user_map_widget.dart';
 
@@ -31,110 +33,123 @@ class _HomePageState extends State<HomePage> {
         ),
         title: const Text('Bhisma'),
       ),
-      body: Column(
-        children: [
-          Container(
-            color: background,
-            width: width,
-            height: 80,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: () {},
-                  child: const Text('Alarm'),
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.red),
-                    shape: MaterialStateProperty.all(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+      body: ChangeNotifierProvider(
+        create: (_) => MapProvider(),
+        builder: (ctx, _) {
+          return Column(
+            children: [
+              Container(
+                color: background,
+                width: width,
+                height: 80,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {},
+                      child: const Text('Alarm'),
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(Colors.red),
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        padding: MaterialStateProperty.all(
+                          const EdgeInsets.symmetric(
+                            horizontal: 40,
+                          ),
+                        ),
                       ),
                     ),
-                    padding: MaterialStateProperty.all(
-                      const EdgeInsets.symmetric(
-                        horizontal: 40,
+                    ElevatedButton(
+                      onPressed: () {},
+                      child: const Text('Emergency call'),
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(Colors.red),
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        padding: MaterialStateProperty.all(
+                          const EdgeInsets.symmetric(
+                            horizontal: 30,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-                ElevatedButton(
-                  onPressed: () {},
-                  child: const Text('Emergency call'),
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.red),
-                    shape: MaterialStateProperty.all(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                    padding: MaterialStateProperty.all(
-                      const EdgeInsets.symmetric(
-                        horizontal: 30,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const Expanded(
-            flex: 3,
-            child: MapWidget(),
-          ),
-          Expanded(
-            flex: 1,
-            child: Container(
-              color: background,
-              height: 100,
-              width: width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton(
-                    child: const Text('Report Crime'),
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.grey),
-                      shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ),
-                      padding: MaterialStateProperty.all(
-                        const EdgeInsets.symmetric(
-                          horizontal: 40,
-                        ),
-                      ),
-                    ),
-                    onPressed: () {
-                      showModalBottomSheet(
-                        isScrollControlled: true,
-                        context: context,
-                        builder: (ctx) => const ReportBottomSheet(),
-                      );
-                    },
-                  ),
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: const Text('See Report'),
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.grey),
-                      shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ),
-                      padding: MaterialStateProperty.all(
-                        const EdgeInsets.symmetric(
-                          horizontal: 30,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
               ),
-            ),
-          )
-        ],
+              const Expanded(
+                flex: 3,
+                child: MapWidget(),
+              ),
+              Expanded(
+                flex: 1,
+                child: Container(
+                  color: background,
+                  height: 100,
+                  width: width,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        child: const Text('Report Crime'),
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.grey),
+                          shape: MaterialStateProperty.all(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          padding: MaterialStateProperty.all(
+                            const EdgeInsets.symmetric(
+                              horizontal: 40,
+                            ),
+                          ),
+                        ),
+                        onPressed: () {
+                          showModalBottomSheet(
+                            isScrollControlled: true,
+                            context: context,
+                            builder: (ctx) => const ReportBottomSheet(),
+                          ).then((value) {
+                            Provider.of<MapProvider>(ctx, listen: false)
+                                .getReports();
+                          });
+                        },
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          Provider.of<MapProvider>(ctx, listen: false)
+                              .getReports();
+                        },
+                        child: const Text('See Report'),
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.grey),
+                          shape: MaterialStateProperty.all(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          padding: MaterialStateProperty.all(
+                            const EdgeInsets.symmetric(
+                              horizontal: 30,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          );
+        },
       ),
     );
   }
