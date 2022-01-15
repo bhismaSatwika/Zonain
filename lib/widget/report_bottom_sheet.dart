@@ -3,8 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:zonain/common/navigation.dart';
+import 'package:zonain/provider/map_provider.dart';
+import 'package:zonain/services/database_services.dart';
 import 'package:zonain/ui/report_map_page.dart';
+import 'package:zonain/widget/dialogs.dart';
 
 class ReportBottomSheet extends StatefulWidget {
   const ReportBottomSheet({Key? key}) : super(key: key);
@@ -20,6 +24,8 @@ class _ReportBottomSheetState extends State<ReportBottomSheet> {
   LatLng location = LatLng(-8.409518, 115.275915);
   final Set<Marker> _markers = {};
   late BitmapDescriptor customIcon;
+
+  final _textController = TextEditingController();
 
   @override
   void initState() {
@@ -93,6 +99,7 @@ class _ReportBottomSheetState extends State<ReportBottomSheet> {
               const SizedBox(height: 20),
               TextField(
                 maxLines: 5,
+                controller: _textController,
                 decoration: InputDecoration(
                   hintText: 'Terjadi Begal',
                   hintStyle: TextStyle(color: Colors.grey[200]),
@@ -184,10 +191,30 @@ class _ReportBottomSheetState extends State<ReportBottomSheet> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: const Text('Tambah Report'),
-                  ),
+                  ChangeNotifierProvider<MapProvider>(
+                      create: (_) => MapProvider(),
+                      builder: (ctx, _) {
+                        return ElevatedButton(
+                          onPressed: () async {
+                            final dialogs = await Dialogs.yesAbortDialog(
+                                context,
+                                'Tambahkan Report',
+                                'Apakah Anda Yakin Ingin Menambahkan Report ?');
+                            if (dialogs == DialogAction.yes) {
+                              await Provider.of<MapProvider>(ctx, listen: false)
+                                  .addReport(
+                                latitude: location.latitude,
+                                longitude: location.longitude,
+                                description: _textController.text,
+                                date: _selectedDate,
+                                time: _selectedTime,
+                              );
+                              Navigation.back();
+                            }
+                          },
+                          child: const Text('Tambah Report'),
+                        );
+                      }),
                   ElevatedButton(
                     onPressed: () {
                       Navigation.back();

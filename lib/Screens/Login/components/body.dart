@@ -9,7 +9,7 @@ import 'package:zonain/components/rounded_password_field.dart';
 
 class Body extends StatelessWidget {
   const Body({
-    Key key,
+     Key? key,
   }) : super(key: key);
 
   @override
@@ -20,11 +20,11 @@ class Body extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
+            const Text (
               "LOGIN",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.only(right: 110),
               child: Image.asset(
