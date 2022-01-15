@@ -27,6 +27,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  google_fonts: ^2.2.0
   cupertino_icons: ^1.0.2
   flutter:
     sdk: flutter
@@ -50,8 +51,10 @@ flutter:
   uses-material-design: true
   # To add assets to your application, add an assets section, like this:
   assets:
-    - images/Vector.png
-  #   - images/a_dot_ham.jpeg
+    - images/
+    - assets/images/
+    - assets/icons/
+    
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see
