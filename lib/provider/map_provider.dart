@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:zonain/common/result_state.dart';
 import 'package:zonain/model/report.dart';
@@ -31,6 +30,7 @@ class MapProvider extends ChangeNotifier {
         return _report = reportsData;
       }
     } catch (e) {
+      print(e);
       _state = ResultState.error;
       notifyListeners();
     }
@@ -42,6 +42,7 @@ class MapProvider extends ChangeNotifier {
     required String description,
     required DateTime date,
     required TimeOfDay time,
+    required String classification,
   }) async {
     try {
       _state = ResultState.loading;
@@ -51,9 +52,31 @@ class MapProvider extends ChangeNotifier {
           longitude: longitude,
           description: description,
           date: date,
-          time: time);
+          time: time,
+          classification: classification);
       _state = ResultState.done;
       notifyListeners();
+    } catch (e) {
+      print(e);
+      _state = ResultState.error;
+      notifyListeners();
+    }
+  }
+
+  Future<dynamic> getReportsByClassification(String cs) async {
+    try {
+      _state = ResultState.loading;
+      notifyListeners();
+      final reportsData = await _databaseService.getReportByClassification(cs);
+
+      if (reportsData.isEmpty) {
+        _state = ResultState.noData;
+        notifyListeners();
+      } else if (reportsData.isNotEmpty) {
+        _state = ResultState.hasData;
+        notifyListeners();
+        return _report = reportsData;
+      }
     } catch (e) {
       print(e);
       _state = ResultState.error;

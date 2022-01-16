@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:zonain/Screens/Signup/signup_screen.dart';
 import 'package:zonain/common/navigation.dart';
 import 'package:zonain/provider/map_provider.dart';
 import 'package:zonain/services/database_services.dart';
@@ -21,9 +22,19 @@ class _ReportBottomSheetState extends State<ReportBottomSheet> {
   final Completer<GoogleMapController> _controller = Completer();
   var _selectedDate = DateTime.now();
   var _selectedTime = TimeOfDay.now();
-  LatLng location = LatLng(-8.409518, 115.275915);
+  LatLng location = const LatLng(-8.409518, 115.275915);
   final Set<Marker> _markers = {};
   late BitmapDescriptor customIcon;
+
+  final List<String> _clasifications = [
+    'Kejahatan Terhadap Nyawa',
+    'Kejahatan Terhadap Fisik/Nyawa',
+    'Kejahatan Terhadap Kesusilaan',
+    'Kejahatan Terhadap Kemerdekaan Orang',
+    'Kejahatan Terhadap Hak Milik/Barang Dengan Penggunaan Kekerasan',
+    'Kejahatan Terhadap Hak Milik Tanpa Kekerasan'
+  ];
+  String _currentCs = 'Kejahatan Terhadap Nyawa';
 
   final _textController = TextEditingController();
 
@@ -187,7 +198,42 @@ class _ReportBottomSheetState extends State<ReportBottomSheet> {
                   ),
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
+              Container(
+                alignment: Alignment.centerLeft,
+                decoration: const BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(color: Colors.white, width: 2),
+                  ),
+                ),
+                height: 60.0,
+                child: DropdownButtonFormField(
+                  isExpanded: true,
+                  decoration: const InputDecoration(
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                  ),
+                  value: _currentCs,
+                  items: _clasifications.map((cs) {
+                    return DropdownMenuItem(
+                      value: cs,
+                      child: Text(
+                        cs,
+                        overflow: TextOverflow.visible,
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (val) {
+                    setState(() {
+                      _currentCs = val as String;
+                      Provider.of<MapProvider>(context)
+                          .getReportsByClassification(_currentCs);
+                    });
+                  },
+                ),
+              ),
+              const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -208,8 +254,14 @@ class _ReportBottomSheetState extends State<ReportBottomSheet> {
                                 description: _textController.text,
                                 date: _selectedDate,
                                 time: _selectedTime,
+                                classification: _currentCs,
                               );
                               Navigation.back();
+                              // print(
+                              //     '${location.latitude}, ${location.longitude}');
+                              // final _db = DatabaseService();
+                              // await _db.getAddress(
+                              //     location.latitude, location.longitude);
                             }
                           },
                           child: const Text('Tambah Report'),

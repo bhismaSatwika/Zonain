@@ -1,6 +1,4 @@
-import 'dart:async';
 import 'package:location/location.dart';
-import 'package:observable/observable.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:zonain/model/user_location.dart';
 

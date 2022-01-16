@@ -5,11 +5,12 @@ import 'package:zonain/components/already_have_an_account_acheck.dart';
 import 'package:zonain/components/rounded_button.dart';
 import 'package:zonain/components/rounded_input_field.dart';
 import 'package:zonain/components/rounded_password_field.dart';
+import 'package:zonain/ui/home_page.dart';
 // import 'package:flutter_svg/svg.dart';
 
 class Body extends StatelessWidget {
   const Body({
-     Key? key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -20,7 +21,7 @@ class Body extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text (
+            const Text(
               "LOGIN",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
@@ -42,20 +43,14 @@ class Body extends StatelessWidget {
             ),
             RoundedButton(
               text: "LOGIN",
-              press: () {},
+              press: () {
+                // Navigator.pushReplacementNamed(context, HomePage.routeName);
+                Navigator.pushNamed(context, HomePage.routeName);
+              },
             ),
             SizedBox(height: size.height * 0.03),
             AlreadyHaveAnAccountCheck(
-              press: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return SignUpScreen();
-                    },
-                  ),
-                );
-              },
+              press: () {},
             ),
           ],
         ),

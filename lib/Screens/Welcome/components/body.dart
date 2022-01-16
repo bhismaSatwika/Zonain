@@ -3,10 +3,10 @@ import 'package:zonain/Screens/Login/login_screen.dart';
 import 'package:zonain/Screens/Signup/signup_screen.dart';
 import 'package:zonain/Screens/Welcome/components/background.dart';
 import 'package:zonain/components/rounded_button.dart';
-import 'package:zonain/constants.dart';
-import 'package:zonain/svg.dart';
 
 class Body extends StatelessWidget {
+  const Body({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -16,12 +16,12 @@ class Body extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            SizedBox(height: 20),
-            Text(
+            const SizedBox(height: 20),
+            const Text(
               "WELCOME TO ZONAIN",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.only(right: 110),
               child: Image.asset(
@@ -29,34 +29,20 @@ class Body extends StatelessWidget {
                 height: size.height * 0.45,
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             RoundedButton(
-              color: Color(0xFF665EFF),
+              color: const Color(0xFF665EFF),
               text: "LOGIN",
               press: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return LoginScreen();
-                    },
-                  ),
-                );
+                Navigator.pushNamed(context, LoginScreen.routeName);
               },
             ),
             RoundedButton(
               text: "SIGN UP",
-              color: Color(0xFFE4E7E9),
+              color: const Color(0xFFE4E7E9),
               textColor: Colors.black,
               press: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return SignUpScreen();
-                    },
-                  ),
-                );
+                Navigator.pushNamed(context, SignUpScreen.routeName);
               },
             ),
           ],

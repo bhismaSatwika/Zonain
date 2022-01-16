@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:geocoding/geocoding.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -56,69 +57,71 @@ class _MapWidgetState extends State<MapWidget> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<UserLocation>(
-        stream: userLocationService.userLocationStream,
-        builder: (_, snapshot) {
-          if (snapshot.hasData) {
-            _markers.first =
-                _marker(snapshot.data!.latitude, snapshot.data!.longitude);
-          }
-          return Stack(
-            children: [
-              Consumer<MapProvider>(
-                builder: (context, provider, _) {
-                  if (provider.state == ResultState.loading) {
-                    return const Center(
-                      child: Text('Memuat Map...'),
-                    );
-                  } else if (provider.state == ResultState.error) {
-                    return const Center(
-                      child: Text('Terjadi Error'),
-                    );
-                  } else {
-                    _markers.clear();
-                    final reports = provider.reports;
-                    for (int i = 0; i < reports.length; i++) {
-                      _markers.add(
-                        Marker(
-                          markerId: MarkerId(reports[i].id),
-                          position:
-                              LatLng(reports[i].latitude, reports[i].longitude),
-                        ),
-                      );
-                    }
-                    return GoogleMap(
-                      mapType: MapType.normal,
-                      initialCameraPosition: _defaultBali,
-                      onMapCreated: (GoogleMapController controller) {
-                        if (!_controller.isCompleted) {
-                          _controller.complete(controller);
-                        }
-                      },
-                      markers: snapshot.hasData
-                          ? _markers.toSet()
-                          : _markers.toSet(),
+      stream: userLocationService.userLocationStream,
+      builder: (_, snapshot) {
+        if (snapshot.hasData) {
+          _markers.first =
+              _marker(snapshot.data!.latitude, snapshot.data!.longitude);
+        }
+        return Stack(
+          children: [
+            Consumer<MapProvider>(
+              builder: (context, provider, _) {
+                if (provider.state == ResultState.loading) {
+                  return const Center(
+                    child: Text('Memuat Map...'),
+                  );
+                } else if (provider.state == ResultState.error) {
+                  return const Center(
+                    child: Text('Terjadi Error'),
+                  );
+                } else {
+                  _markers.clear();
+                  _markers.add(_marker(
+                      snapshot.data!.latitude, snapshot.data!.longitude));
+                  final reports = provider.reports;
+                  for (int i = 0; i < reports.length; i++) {
+                    _markers.add(
+                      Marker(
+                        markerId: MarkerId(reports[i].id),
+                        position:
+                            LatLng(reports[i].latitude, reports[i].longitude),
+                      ),
                     );
                   }
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 16.0, bottom: 32),
-                child: Align(
-                  alignment: Alignment.bottomLeft,
-                  child: FloatingActionButton(
-                    onPressed: () {
-                      if (snapshot.hasData) {
-                        _goToMyLocation(
-                            snapshot.data!.latitude, snapshot.data!.longitude);
+                  return GoogleMap(
+                    mapType: MapType.normal,
+                    initialCameraPosition: _defaultBali,
+                    onMapCreated: (GoogleMapController controller) {
+                      if (!_controller.isCompleted) {
+                        _controller.complete(controller);
                       }
                     },
-                    child: const Icon(Icons.my_location),
-                  ),
+                    markers:
+                        snapshot.hasData ? _markers.toSet() : _markers.toSet(),
+                  );
+                }
+              },
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, bottom: 32),
+              child: Align(
+                alignment: Alignment.bottomLeft,
+                child: FloatingActionButton(
+                  onPressed: () {
+                    if (snapshot.hasData) {
+                      _goToMyLocation(
+                          snapshot.data!.latitude, snapshot.data!.longitude);
+                    }
+                  },
+                  child: const Icon(Icons.my_location),
                 ),
               ),
-            ],
-          );
-        });
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> _goToMyLocation(double latitude, double longitude) async {
